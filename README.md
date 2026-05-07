@@ -50,7 +50,7 @@ Full (recommended for real investigations)
 bash
 pip install .[full]
 Full extras include: pyewf, python-magic, yara-python, Pillow, pypdf, numpy.
-
+```
 The tool never crashes if an optional library is missing – it prints a warning and continues with reduced functionality.
 
 🚀 Usage
