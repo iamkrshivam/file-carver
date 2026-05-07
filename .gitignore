@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.raw
+*_output/
+.DS_Store
+*.so
+tests/test_image.raw
+carved_test/
+venv/
+.pytest_cache/

@@ -1,0 +1,13 @@
+# Minimal: only stdlib
+# Install: pip install .
+
+# Full: recommended for production investigations
+# Install: pip install .[full]
+
+[full]
+pyewf>=0.6.0
+python-magic>=0.4.27
+yara-python>=4.5.0
+Pillow>=10.0.0
+pypdf>=3.0.0
+numpy>=1.24.0

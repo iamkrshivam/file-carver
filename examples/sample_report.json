@@ -1,0 +1,43 @@
+{
+  "source_image": {
+    "path": "/cases/2026-001/evidence.raw",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size_bytes": 104857600,
+    "investigator": "Jane Doe"
+  },
+  "execution": {
+    "start_time_utc": "2026-04-01T10:00:00Z",
+    "end_time_utc": "2026-04-01T10:02:30Z",
+    "duration_seconds": 150.5,
+    "tool_version": "2.0",
+    "arguments": {
+      "input": "/cases/2026-001/evidence.raw",
+      "output": "./out",
+      "parallel": 4,
+      "fs": null,
+      "recurse": false,
+      "investigator": "Jane Doe",
+      "yara": null
+    }
+  },
+  "carved_files": [
+    {
+      "file_id": "0001",
+      "offset_start": 204800,
+      "offset_end": 312576,
+      "size_bytes": 107776,
+      "type": "jpeg",
+      "md5": "d41d8cd98f00b204e9800998ecf8427e",
+      "sha1": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "entropy": 7.2,
+      "verified": true,
+      "validation_details": "Valid JPEG structure with EOI",
+      "fragmented": false,
+      "output_path": "./out/0001.jpg",
+      "warning": null
+    }
+  ],
+  "audit_log_path": "./out/audit.jsonl",
+  "warnings_count": 0,
+  "errors_count": 0
+}
