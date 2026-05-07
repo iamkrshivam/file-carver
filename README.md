@@ -1,83 +1,161 @@
 # Forensic File Carver (DFIR Tool)
 
-**A production‑ready, court‑defensible file carving suite for digital forensic investigations.**
+**A production-ready, court-defensible file carving suite for digital forensic investigations.**
 
 ---
 
 ## ⚖️ Legal Disclaimer
 
-This tool is intended **only** for lawful digital forensic investigations, incident response, and data recovery. Unauthorised use on systems you do not own or have no legal right to access may violate applicable laws. The authors assume **no liability** for misuse.
+This tool is intended **only** for lawful digital forensic investigations, incident response, and data recovery. Unauthorized use on systems you do not own or have no legal right to access may violate applicable laws. The authors assume **no liability** for misuse.
 
 ---
 
-## 📌 Overview
+# 📌 Overview
 
 Recover deleted files from:
-- Raw disk images (`.dd`, `.raw`, `.img`)
-- Memory dumps
-- Unallocated space (even without a file system)
+
+* Raw disk images (`.dd`, `.raw`, `.img`)
+* Memory dumps
+* Unallocated space (even without a file system)
 
 Designed for forensic soundness with:
-- Full **chain‑of‑custody** logging
-- **Parallel carving** for speed
-- Optional **file‑system‑aware parsing** (NTFS / FAT)
+
+* Full **chain-of-custody logging**
+* **Parallel carving** for speed
+* Optional **file-system-aware parsing** (NTFS / FAT)
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-- **Header‑footer carving** + **fragmented file recovery** (JPEG, PNG, PDF, ZIP, …)
-- **Entropy‑based fragment detection** (sliding window Shannon entropy)
-- **Advanced signature engine** – exact, wildcard (`??`), and offset‑variable patterns
-- **Parallel processing** with boundary‑safe chunk splitting and deduplication
-- **Immutable audit log** (JSONL) with UTC timestamps, investigator name, and source hash
-- **SHA‑256 source verification** – computed *before* carving, never modifies evidence
-- **Threat protection** – zip bomb detection, path traversal sanitisation, malformed PDF handling
-- **Optional NTFS/FAT unallocated carving** – reduces false positives
-- **Recursive container unpacking** – dives into ZIP, DOCX, XLSX, PDF and carves nested files
-- **YARA rule scanning** (requires `yara‑python`)
-- **E01 Expert Witness format** support (requires `pyewf`)
-- **Thumbnail generation** for JPEG / PNG (requires Pillow)
+* Header-footer carving + fragmented file recovery (`JPEG`, `PNG`, `PDF`, `ZIP`, etc.)
+* Entropy-based fragment detection using sliding-window Shannon entropy
+* Advanced signature engine:
+
+  * Exact signatures
+  * Wildcards (`??`)
+  * Offset-variable patterns
+* Parallel processing with:
+
+  * Boundary-safe chunk splitting
+  * Deduplication
+* Immutable audit log (`JSONL`) with:
+
+  * UTC timestamps
+  * Investigator name
+  * Source hash
+* SHA-256 source verification performed **before carving**
+* Evidence-safe workflow that **never modifies source media**
+* Threat protection:
+
+  * ZIP bomb detection
+  * Path traversal sanitization
+  * Malformed PDF handling
+* Optional NTFS/FAT unallocated-space carving to reduce false positives
+* Recursive container unpacking:
+
+  * ZIP
+  * DOCX
+  * XLSX
+  * PDF
+* YARA rule scanning (requires `yara-python`)
+* E01 Expert Witness format support (requires `pyewf`)
+* Thumbnail generation for JPEG/PNG files (requires Pillow)
 
 ---
 
-## 🛠️ Installation
+# 🛠️ Installation
 
-### Minimal (standard library only)
+## Minimal Installation (Standard Library Only)
+
 ```bash
 pip install .
-Full (recommended for real investigations)
-bash
-pip install .[full]
-Full extras include: pyewf, python-magic, yara-python, Pillow, pypdf, numpy.
 ```
-The tool never crashes if an optional library is missing – it prints a warning and continues with reduced functionality.
 
-🚀 Usage
+## Full Installation (Recommended)
+
 ```bash
-# Basic carving
+pip install .[full]
+```
+
+### Full Extras Include
+
+* `pyewf`
+* `python-magic`
+* `yara-python`
+* `Pillow`
+* `pypdf`
+* `numpy`
+
+The tool never crashes if an optional dependency is missing.
+Instead, it prints a warning and continues with reduced functionality.
+
+---
+
+# 🚀 Usage
+
+## Basic Carving
+
+```bash
 python carver.py --input evidence.raw --output ./carved/
+```
 
-# Add investigator name (chain of custody)
-python carver.py --input image.dd --output ./out \
+## Add Investigator Name (Chain of Custody)
+
+```bash
+python carver.py \
+    --input image.dd \
+    --output ./out \
     --investigator "Jane Smith"
+```
 
-# Parallel carving (4 threads)
-python carver.py --input disk.img --output ./out --parallel 4
+## Parallel Carving (4 Threads)
 
-# Carve only unallocated NTFS clusters (less noise)
-python carver.py --input ntfs.dd --output ./out --fs ntfs
+```bash
+python carver.py \
+    --input disk.img \
+    --output ./out \
+    --parallel 4
+```
 
-# Recursively unpack and carve inside archives (ZIP, DOCX, PDF, …)
-python carver.py --input disk.img --output ./out --recurse
+## Carve Only Unallocated NTFS Clusters
 
-# Scan carved files with YARA rules
-python carver.py --input memory.dmp --output ./out --yara rules.yar
+```bash
+python carver.py \
+    --input ntfs.dd \
+    --output ./out \
+    --fs ntfs
+```
 
-# Carve an E01 Expert Witness file
-python carver.py --input evidence.E01 --output ./out
+## Recursive Archive Carving
 
-# Combine everything for a real case
+```bash
+python carver.py \
+    --input disk.img \
+    --output ./out \
+    --recurse
+```
+
+## Scan Carved Files with YARA Rules
+
+```bash
+python carver.py \
+    --input memory.dmp \
+    --output ./out \
+    --yara rules.yar
+```
+
+## Carve an E01 Expert Witness File
+
+```bash
+python carver.py \
+    --input evidence.E01 \
+    --output ./out
+```
+
+## Full Real-World Investigation Example
+
+```bash
 python carver.py \
     --input /cases/001/disk.dd \
     --output /cases/001/recovered \
@@ -87,50 +165,122 @@ python carver.py \
     --recurse \
     --yara malware.yar
 ```
-🔬 Advanced Features (Deep Dive)
-Fragmented JPEG reconstruction – uses SOS markers to chain scattered fragments
 
-Entropy‑based fragment boundary detection – sliding window finds where data drops below expected compression
+---
 
-Footer ambiguity resolution – e.g., for ZIP files, picks the last valid end‑of‑central‑directory record
+# 🔬 Advanced Features
 
-Zip bomb detection – halts immediately if compression ratio exceeds 1000×
+## Fragmented JPEG Reconstruction
 
-Automatic thumbnails for recovered images (Pillow)
+Uses SOS (Start of Scan) markers and heuristic chaining to reconstruct scattered JPEG fragments.
 
-⚠️ Limitations
-Fragmented MP4 recovery is not supported (heuristics too complex); a warning is logged if carving fails
+## Entropy-Based Fragment Boundary Detection
 
-Full‑disk encryption (BitLocker, LUKS, …) is not automatically detected – carve from a decrypted image first
+Sliding-window entropy analysis identifies likely compressed-data regions and fragmentation boundaries.
 
-NTFS/FAT parsing is simplified; in complex scenarios the tool falls back gracefully to full‑image carving
+## Footer Ambiguity Resolution
 
-🧪 Testing
-To verify everything works:
+For formats like ZIP, the tool selects the last valid End-of-Central-Directory record to reduce truncation errors.
+
+## ZIP Bomb Detection
+
+Extraction halts automatically if the compression ratio exceeds **1000×**.
+
+## Automatic Thumbnail Generation
+
+Recovered images can automatically generate preview thumbnails when Pillow is installed.
+
+---
+
+# ⚠️ Limitations
+
+* Fragmented MP4 recovery is not currently supported.
+
+  * MP4 fragmentation heuristics are significantly more complex.
+  * Failures are logged with warnings.
+* Full-disk encryption (`BitLocker`, `LUKS`, etc.) is not automatically detected.
+
+  * Use decrypted disk images before carving.
+* NTFS/FAT parsing is intentionally simplified.
+
+  * In complex scenarios, the tool gracefully falls back to full-image carving.
+
+---
+
+# 🧪 Testing
+
+## Generate a Synthetic Test Image
 
 ```bash
 cd tests
-python3 generate_test_image.py       # create a 100 MB synthetic image
-cd ..
-python3 carver.py --input tests/test_image.raw --output ./test_out
-python3 -m pytest tests/             # run unit & integration tests
-All 3 tests should pass, and the carver should recover all 5 embedded JPEGs (including one deliberately fragmented).
+python3 generate_test_image.py
 ```
-📂 Output Structure
-text
+
+## Run the Carver
+
+```bash
+cd ..
+python3 carver.py \
+    --input tests/test_image.raw \
+    --output ./test_out
+```
+
+## Execute Tests
+
+```bash
+python3 -m pytest tests/
+```
+
+### Expected Results
+
+* All tests should pass
+* The carver should recover all embedded JPEGs
+* Includes recovery of one deliberately fragmented JPEG
+
+---
+
+# 📂 Output Structure
+
+```text
 carved_out/
-├── 0001.jpg          # recovered files
+├── 0001.jpg
 ├── 0002.png
-├── report.json       # full forensic report
-├── report.csv        # flat summary for spreadsheets
-├── audit.jsonl       # immutable chain‑of‑custody log
-└── thumbnails/       # preview images (if Pillow installed)
+├── report.json
+├── report.csv
+├── audit.jsonl
+└── thumbnails/
     ├── 0001_thumb.png
     └── ...
-📄 License
-MIT – see the LICENSE file.
+```
 
-🤝 Contributing
-Pull requests are welcome! Please ensure all tests pass before submitting.
+## Output Files
 
-Built with ❤️ for the DFIR community.
+| File          | Description                          |
+| ------------- | ------------------------------------ |
+| `0001.jpg`    | Recovered carved files               |
+| `report.json` | Full forensic report                 |
+| `report.csv`  | Spreadsheet-friendly summary         |
+| `audit.jsonl` | Immutable chain-of-custody log       |
+| `thumbnails/` | Image previews (if Pillow installed) |
+
+---
+
+# 📄 License
+
+MIT License — see the `LICENSE` file for details.
+
+---
+
+# 🤝 Contributing
+
+Pull requests are welcome.
+
+Before submitting:
+
+* Ensure all tests pass
+* Follow forensic-safe coding practices
+* Add tests for new carving signatures or parsers
+
+---
+
+Built for the DFIR and incident response community.
