@@ -54,7 +54,7 @@ Full extras include: pyewf, python-magic, yara-python, Pillow, pypdf, numpy.
 The tool never crashes if an optional library is missing – it prints a warning and continues with reduced functionality.
 
 🚀 Usage
-bash
+```bash
 # Basic carving
 python carver.py --input evidence.raw --output ./carved/
 
@@ -86,6 +86,7 @@ python carver.py \
     --fs ntfs \
     --recurse \
     --yara malware.yar
+```
 🔬 Advanced Features (Deep Dive)
 Fragmented JPEG reconstruction – uses SOS markers to chain scattered fragments
 
@@ -107,14 +108,14 @@ NTFS/FAT parsing is simplified; in complex scenarios the tool falls back gracefu
 🧪 Testing
 To verify everything works:
 
-bash
+```bash
 cd tests
 python3 generate_test_image.py       # create a 100 MB synthetic image
 cd ..
 python3 carver.py --input tests/test_image.raw --output ./test_out
 python3 -m pytest tests/             # run unit & integration tests
 All 3 tests should pass, and the carver should recover all 5 embedded JPEGs (including one deliberately fragmented).
-
+```
 📂 Output Structure
 text
 carved_out/
